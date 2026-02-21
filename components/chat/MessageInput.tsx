@@ -21,7 +21,7 @@ export function MessageInput({ conversationId, senderId }: MessageInputProps) {
     const sendMessage = useMutation(api.messages.sendMessage);
 
     // Typing indicator logic
-    const { handleTyping } = useTyping({ conversationId, userId: senderId });
+    const { performTyping: handleTyping } = useTyping(conversationId, senderId);
 
     const handleSend = async (e?: React.FormEvent) => {
         e?.preventDefault();
