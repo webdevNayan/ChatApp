@@ -58,6 +58,7 @@ export function MessageItem({
             });
         } catch (error) {
             console.error(error);
+            toast.error("Reaction failed to update");
         }
     };
 
