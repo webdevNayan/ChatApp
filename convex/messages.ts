@@ -19,7 +19,7 @@ export const sendMessage = mutation({
             body: args.body,
             createdAt: now,
             isDeleted: false,
-            reactions: {},
+            reactions: [],
         });
 
         // Keep conversation sorted in the sidebar
@@ -90,21 +90,17 @@ export const toggleReaction = mutation({
         const msg = await ctx.db.get(args.messageId);
         if (!msg) throw new Error("Message not found");
 
-        const reactions = { ...(msg.reactions ?? {}) };
-        const existing = reactions[args.emoji] ?? [];
-        const userIdStr = String(args.userId);
+        const reactions = [...(msg.reactions ?? [])];
+        const existingIndex = reactions.findIndex(
+            (r) => r.emoji === args.emoji && String(r.userId) === String(args.userId)
+        );
 
-        if (existing.map(String).includes(userIdStr)) {
-            // Remove the reaction
-            reactions[args.emoji] = existing.filter(
-                (id) => String(id) !== userIdStr
-            ) as typeof existing;
-            if (reactions[args.emoji].length === 0) {
-                delete reactions[args.emoji];
-            }
+        if (existingIndex > -1) {
+            // Remove reaction
+            reactions.splice(existingIndex, 1);
         } else {
-            // Add the reaction
-            reactions[args.emoji] = [...existing, args.userId];
+            // Add reaction
+            reactions.push({ emoji: args.emoji, userId: args.userId });
         }
 
         await ctx.db.patch(args.messageId, { reactions });

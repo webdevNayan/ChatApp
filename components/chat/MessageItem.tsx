@@ -17,16 +17,22 @@ import {
 import { cn } from "@/lib/utils";
 import { formatMessageTime } from "@/lib/date";
 import { MoreHorizontal, Trash2, Smile } from "lucide-react";
-import { FIXED_REACTIONS, type MessageWithSender } from "@/types";
+import { FIXED_REACTIONS, type MessageWithSender, type Id } from "@/types";
 import { toast } from "sonner";
 
 interface MessageItemProps {
     message: MessageWithSender;
     isMe: boolean;
+    currentUserId: Id<"users">;
     showAvatar: boolean;
 }
 
-export function MessageItem({ message, isMe, showAvatar }: MessageItemProps) {
+export function MessageItem({
+    message,
+    isMe,
+    currentUserId,
+    showAvatar,
+}: MessageItemProps) {
     const deleteMessage = useMutation(api.messages.softDeleteMessage);
     const toggleReaction = useMutation(api.messages.toggleReaction);
 
@@ -34,7 +40,7 @@ export function MessageItem({ message, isMe, showAvatar }: MessageItemProps) {
         try {
             await deleteMessage({
                 messageId: message._id,
-                requestingUserId: message.senderId,
+                requestingUserId: currentUserId,
             });
             toast.success("Message deleted");
         } catch (error) {
@@ -47,7 +53,7 @@ export function MessageItem({ message, isMe, showAvatar }: MessageItemProps) {
         try {
             await toggleReaction({
                 messageId: message._id,
-                userId: message.senderId, // In real app, this should be current user's Convex ID
+                userId: currentUserId,
                 emoji,
             });
         } catch (error) {
@@ -113,23 +119,31 @@ export function MessageItem({ message, isMe, showAvatar }: MessageItemProps) {
                         {message.isDeleted ? "This message was deleted" : message.body}
 
                         {/* Reactions display */}
-                        {message.reactions && Object.keys(message.reactions).length > 0 && (
+                        {message.reactions && message.reactions.length > 0 && (
                             <div
                                 className={cn(
                                     "absolute -bottom-4 flex flex-wrap gap-1 z-10",
                                     isMe ? "right-0" : "left-0"
                                 )}
                             >
-                                {Object.entries(message.reactions).map(([emoji, userIds]) => (
-                                    <button
-                                        key={emoji}
-                                        onClick={() => handleReaction(emoji)}
-                                        className="flex items-center gap-1 bg-card border border-border px-1.5 py-0.5 rounded-full text-[10px] shadow-sm hover:scale-110 transition-transform"
-                                    >
-                                        <span>{emoji}</span>
-                                        <span className="font-medium">{userIds.length}</span>
-                                    </button>
-                                ))}
+                                {(() => {
+                                    // Group reactions by emoji
+                                    const grouped = message.reactions.reduce((acc, r) => {
+                                        acc[r.emoji] = (acc[r.emoji] || 0) + 1;
+                                        return acc;
+                                    }, {} as Record<string, number>);
+
+                                    return Object.entries(grouped).map(([emoji, count]) => (
+                                        <button
+                                            key={emoji}
+                                            onClick={() => handleReaction(emoji)}
+                                            className="flex items-center gap-1 bg-card border border-border px-1.5 py-0.5 rounded-full text-[10px] shadow-sm hover:scale-110 transition-transform"
+                                        >
+                                            <span>{emoji}</span>
+                                            <span className="font-medium">{count}</span>
+                                        </button>
+                                    ));
+                                })()}
                             </div>
                         )}
                     </div>

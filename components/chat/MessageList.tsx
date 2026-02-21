@@ -17,7 +17,7 @@ export function MessageList({
     currentUserId,
     conversationId,
 }: MessageListProps) {
-    const { scrollRef, isAtBottom, scrollToBottom, handleScroll } =
+    const { scrollRef, isNearBottom, scrollToBottom, checkScroll } =
         useAutoScroll(messages);
 
     if (messages === undefined) {
@@ -33,7 +33,7 @@ export function MessageList({
             {/* Scrollable container */}
             <div
                 ref={scrollRef}
-                onScroll={handleScroll}
+                onScroll={checkScroll}
                 className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent"
             >
                 {messages.length === 0 ? (
@@ -58,6 +58,7 @@ export function MessageList({
                                 key={message._id}
                                 message={message}
                                 isMe={message.senderId === currentUserId}
+                                currentUserId={currentUserId}
                                 showAvatar={isLastFromUser && message.senderId !== currentUserId}
                             />
                         );
@@ -66,7 +67,7 @@ export function MessageList({
             </div>
 
             {/* Scroll to bottom button (FAB) */}
-            {!isAtBottom && (
+            {!isNearBottom && (
                 <Button
                     size="icon"
                     className="absolute bottom-4 right-6 rounded-full shadow-lg ring-1 ring-border bg-card hover:bg-muted text-foreground animate-in fade-in slide-in-from-bottom-2 duration-200"

@@ -32,10 +32,15 @@ export default defineSchema({
     createdAt: v.number(),
     isDeleted: v.boolean(),
     /**
-     * Reactions stored as a record mapping emoji to array of user IDs
-     * Example: { "👍": ["user1", "user2"], "❤️": ["user3"] }
+     * Reactions stored as an array of objects to bypass Convex record-key ASCII limits.
+     * Example: [{ emoji: "👍", userId: "user1" }, { emoji: "👍", userId: "user2" }]
      */
-    reactions: v.record(v.string(), v.array(v.id("users"))),
+    reactions: v.array(
+      v.object({
+        emoji: v.string(),
+        userId: v.id("users"),
+      })
+    ),
   }).index("by_conversationId", ["conversationId"]),
 
   conversationReads: defineTable({
