@@ -38,7 +38,7 @@ export const listMessages = query({
     handler: async (ctx, args) => {
         const messages = await ctx.db
             .query("messages")
-            .withIndex("by_conversation_created", (q) =>
+            .withIndex("by_conversationId", (q) =>
                 q.eq("conversationId", args.conversationId)
             )
             .order("asc")
@@ -124,7 +124,7 @@ export const getUnreadCount = query({
         // Get last-read record for this user in this conversation
         const readRecord = await ctx.db
             .query("conversationReads")
-            .withIndex("by_user_conversation", (q) =>
+            .withIndex("by_userId_conversationId", (q) =>
                 q
                     .eq("userId", args.userId)
                     .eq("conversationId", args.conversationId)
@@ -136,7 +136,7 @@ export const getUnreadCount = query({
         // Count messages sent after lastReadAt, excluding own messages
         const messages = await ctx.db
             .query("messages")
-            .withIndex("by_conversation_created", (q) =>
+            .withIndex("by_conversationId", (q) =>
                 q.eq("conversationId", args.conversationId)
             )
             .filter((q) =>
@@ -164,7 +164,7 @@ export const markAsRead = mutation({
     handler: async (ctx, args) => {
         const existing = await ctx.db
             .query("conversationReads")
-            .withIndex("by_user_conversation", (q) =>
+            .withIndex("by_userId_conversationId", (q) =>
                 q
                     .eq("userId", args.userId)
                     .eq("conversationId", args.conversationId)

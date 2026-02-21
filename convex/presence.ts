@@ -25,7 +25,7 @@ export const setTyping = mutation({
     handler: async (ctx, args) => {
         const existing = await ctx.db
             .query("typingIndicators")
-            .withIndex("by_conversation_user", (q) =>
+            .withIndex("by_conversationId_userId", (q) =>
                 q
                     .eq("conversationId", args.conversationId)
                     .eq("userId", args.userId)
@@ -56,7 +56,7 @@ export const clearTyping = mutation({
     handler: async (ctx, args) => {
         const existing = await ctx.db
             .query("typingIndicators")
-            .withIndex("by_conversation_user", (q) =>
+            .withIndex("by_conversationId_userId", (q) =>
                 q
                     .eq("conversationId", args.conversationId)
                     .eq("userId", args.userId)
@@ -83,7 +83,7 @@ export const getTypingUsers = query({
 
         const rows = await ctx.db
             .query("typingIndicators")
-            .withIndex("by_conversation", (q) =>
+            .withIndex("by_conversationId", (q) =>
                 q.eq("conversationId", args.conversationId)
             )
             .filter((q) =>

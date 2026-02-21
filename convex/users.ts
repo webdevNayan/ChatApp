@@ -15,7 +15,7 @@ export const syncUser = mutation({
     handler: async (ctx, args) => {
         const existing = await ctx.db
             .query("users")
-            .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
             .unique();
 
         if (existing) {
@@ -53,7 +53,7 @@ export const setOnlineStatus = mutation({
     handler: async (ctx, args) => {
         const user = await ctx.db
             .query("users")
-            .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
             .unique();
 
         if (!user) return;
@@ -73,7 +73,7 @@ export const getByClerkId = query({
     handler: async (ctx, args) => {
         return await ctx.db
             .query("users")
-            .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
             .unique();
     },
 });
