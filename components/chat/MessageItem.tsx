@@ -129,10 +129,10 @@ export function MessageItem({
                             >
                                 {(() => {
                                     // Group reactions by emoji, ensuring it's an array (handling legacy data)
-                                    const reactions = (message.reactions as any) || [];
+                                    const reactions = message.reactions as { emoji: string; userId: string }[] | undefined;
                                     const reactionArray = Array.isArray(reactions) ? reactions : [];
 
-                                    const grouped = reactionArray.reduce((acc: Record<string, number>, r: any) => {
+                                    const grouped = reactionArray.reduce((acc: Record<string, number>, r: { emoji: string }) => {
                                         const emoji = r?.emoji;
                                         if (emoji) {
                                             acc[emoji] = (acc[emoji] || 0) + 1;

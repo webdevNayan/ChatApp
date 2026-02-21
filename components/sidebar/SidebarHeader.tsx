@@ -15,7 +15,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Edit2, MoreHorizontal, LogOut, Settings } from "lucide-react";
+import { Edit2, LogOut, Settings } from "lucide-react";
 import type { UserDoc } from "@/types";
 import { useEffect, useState } from "react";
 
@@ -33,6 +33,7 @@ export function SidebarHeader({
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
     }, []);
 

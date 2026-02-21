@@ -23,6 +23,7 @@ export default defineSchema({
     isGroup: v.boolean(),
     name: v.optional(v.string()),
     lastMessageAt: v.number(),
+    createdBy: v.optional(v.id("users")),
   }).index("by_lastMessageAt", ["lastMessageAt"]),
 
   messages: defineTable({

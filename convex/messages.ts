@@ -93,7 +93,7 @@ export const toggleReaction = mutation({
         const rawReactions = msg.reactions ?? [];
         const reactions = Array.isArray(rawReactions) ? [...rawReactions] : [];
         const existingIndex = reactions.findIndex(
-            (r: any) => r.emoji === args.emoji && String(r.userId) === String(args.userId)
+            (r: { emoji: string; userId: string }) => r.emoji === args.emoji && String(r.userId) === String(args.userId)
         );
 
         if (existingIndex > -1) {
