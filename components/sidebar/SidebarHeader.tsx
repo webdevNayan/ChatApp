@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Edit2, MoreHorizontal, LogOut, Settings } from "lucide-react";
 import type { UserDoc } from "@/types";
+import { useEffect, useState } from "react";
 
 interface SidebarHeaderProps {
     currentUser: UserDoc | null;
@@ -29,6 +30,11 @@ export function SidebarHeader({
 }: SidebarHeaderProps) {
     const { user } = useUser();
     const { signOut } = useClerk();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const initials = currentUser?.name
         ?.split(" ")
@@ -36,6 +42,23 @@ export function SidebarHeader({
         .join("")
         .toUpperCase()
         .slice(0, 2) ?? "?";
+
+    if (!mounted) {
+        return (
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
+                <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
+                        <span className="text-white text-xs font-bold">C</span>
+                    </div>
+                    <span className="font-semibold text-sm tracking-tight">ChatApp</span>
+                </div>
+                <div className="flex items-center gap-1">
+                    <div className="h-8 w-8" />
+                    <div className="h-8 w-8" />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">

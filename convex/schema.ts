@@ -33,14 +33,9 @@ export default defineSchema({
     isDeleted: v.boolean(),
     /**
      * Reactions stored as an array of objects to bypass Convex record-key ASCII limits.
-     * Example: [{ emoji: "👍", userId: "user1" }, { emoji: "👍", userId: "user2" }]
+     * Union used temporarily to handle migration from old object-based format.
      */
-    reactions: v.array(
-      v.object({
-        emoji: v.string(),
-        userId: v.id("users"),
-      })
-    ),
+    reactions: v.any(),
   }).index("by_conversationId", ["conversationId"]),
 
   conversationReads: defineTable({

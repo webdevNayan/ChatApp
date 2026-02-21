@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "convex/react";
 import { useUser } from "@clerk/nextjs";
 import { api } from "@/convex/_generated/api";
@@ -16,11 +16,20 @@ interface SidebarProps {
 export function Sidebar({ currentUser }: SidebarProps) {
     const { user: clerkUser } = useUser();
     const [isNewConvOpen, setIsNewConvOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const conversations = useQuery(
         api.conversations.listConversations,
         currentUser ? { userId: currentUser._id } : "skip"
     );
+
+    if (!mounted) {
+        return <aside className="hidden md:flex w-80 flex-col border-r border-border bg-card h-full shrink-0" />;
+    }
 
     return (
         <>

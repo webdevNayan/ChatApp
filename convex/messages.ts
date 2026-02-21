@@ -90,9 +90,10 @@ export const toggleReaction = mutation({
         const msg = await ctx.db.get(args.messageId);
         if (!msg) throw new Error("Message not found");
 
-        const reactions = [...(msg.reactions ?? [])];
+        const rawReactions = msg.reactions ?? [];
+        const reactions = Array.isArray(rawReactions) ? [...rawReactions] : [];
         const existingIndex = reactions.findIndex(
-            (r) => r.emoji === args.emoji && String(r.userId) === String(args.userId)
+            (r: any) => r.emoji === args.emoji && String(r.userId) === String(args.userId)
         );
 
         if (existingIndex > -1) {
