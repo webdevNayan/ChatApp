@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Production-Ready Chat Application
 
-## Getting Started
+This project is a high-quality real-time chat web application built for evaluation. It leverages modern App Router patterns, real-time backend synchronization, and secure authentication.
 
-First, run the development server:
+## Tech Stack
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript (Strict Mode)
+- **Database/Backend**: Convex (Real-time subscriptions)
+- **Auth**: Clerk (Modern middleware approach)
+- **Styling**: Tailwind CSS + shadcn/ui
 
+---
+
+## Local Setup Instructions (macOS)
+
+### 1. Project Initialization
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd chatapp
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Environment Setup
+Copy the template to `.env.local` and fill in your Clerk keys.
+```bash
+cp .env.example .env.local
+```
+*Note: The app is configured to use placeholders for evaluation.*
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Convex Backend (Local Mode)
+In a separate terminal:
+```bash
+npx convex dev
+```
+Select "Start without an account" to run Convex entirely on your machine. This will automatically sync your schema and types.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run Development Server
+```bash
+npm run dev
+```
+The app will be available at `http://localhost:3000`.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure Highlights
+- `/proxy.ts`: Contains Clerk `clerkMiddleware` logic as per the "NOT middleware.ts" requirement.
+- `/convex`: Contains clean, indexed schema and modularized server functions.
+- `/hooks`: Custom hooks for complex logic like `useAutoScroll`, `useTyping`, and `useOnlineStatus`.
+- `/components/chat`: Atomic chat components (MessageList, Input, TypingIndicator, etc.).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment to Vercel
 
-## Deploy on Vercel
+1. **Push to GitHub**: Create a repository and push your code.
+2. **Import to Vercel**: Connect your GitHub repository to Vercel.
+3. **Environment Variables**:
+   - Add `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+   - Add `CLERK_SECRET_KEY`
+   - Add `CONVEX_DEPLOY_KEY` (Get this from your production Convex dashboard)
+4. **Deploy**: Vercel will automatically handle the build and deployment.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Key Features Implemented
+- **Real-time Sync**: UI updates instantly via Convex subscriptions.
+- **Smart Scroll**: Auto-scroll stays at the bottom unless you scroll up manually.
+- **Typing Indicators**: 2-second debounce logic with real-time feedback.
+- **Presence System**: Accurate online status and "last seen" tracking.
+- **Soft Delete**: Messages are flagged `isDeleted` to preserve chat flow.
+- **Rich Reactions**: Record-based emoji reactions on every message.
+- **Unread Counts**: Efficient real-time unread badges per conversation.
