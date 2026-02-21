@@ -34,7 +34,7 @@ export function ConversationItem({
         : otherParticipant?.name) || "Chat";
 
     const displayImage = conversation.isGroup
-        ? conversation.groupImageUrl
+        ? undefined
         : otherParticipant?.imageUrl;
 
     const lastMessageText = conversation.lastMessage
