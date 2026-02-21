@@ -15,7 +15,7 @@ export type MessageWithSender = Doc<"messages"> & {
     sender: UserDoc | null;
 };
 
-export type ConversationWithDetails = Doc<"conversations"> & {
+export type ConversationWithDetails = Omit<Doc<"conversations">, "participants"> & {
     participants: (UserDoc | null)[];
     lastMessage: MessageWithSender | null;
 };

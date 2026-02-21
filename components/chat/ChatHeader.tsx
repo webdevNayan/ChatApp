@@ -31,9 +31,9 @@ export function ChatHeader({ conversation, currentUserId }: ChatHeaderProps) {
         ? null
         : conversation.participants.find((p) => p?._id !== currentUserId);
 
-    const displayName = conversation.isGroup
+    const displayName = (conversation.isGroup
         ? conversation.name
-        : otherParticipant?.name || "Unknown User";
+        : otherParticipant?.name) || "Chat";
 
     const displayImage = conversation.isGroup
         ? conversation.groupImageUrl

@@ -69,7 +69,7 @@ export const listConversations = query({
     handler: async (ctx, args) => {
         const all = await ctx.db
             .query("conversations")
-            .withIndex("by_last_message", (q) => q.gt("lastMessageAt", 0))
+            .withIndex("by_lastMessageAt", (q) => q.gt("lastMessageAt", 0))
             .order("desc")
             .collect();
 
@@ -88,16 +88,22 @@ export const listConversations = query({
                 // Last message preview
                 const lastMsg = await ctx.db
                     .query("messages")
-                    .withIndex("by_conversation_created", (q) =>
+                    .withIndex("by_conversationId", (q) =>
                         q.eq("conversationId", conv._id)
                     )
                     .order("desc")
                     .first();
 
+                let enrichedLastMsg = null;
+                if (lastMsg) {
+                    const sender = await ctx.db.get(lastMsg.senderId);
+                    enrichedLastMsg = { ...lastMsg, sender };
+                }
+
                 return {
                     ...conv,
                     participants: participants.filter(Boolean),
-                    lastMessage: lastMsg ?? null,
+                    lastMessage: enrichedLastMsg,
                 };
             })
         );
@@ -119,7 +125,25 @@ export const getConversation = query({
             conv.participants.map((id) => ctx.db.get(id))
         );
 
-        return { ...conv, participants: participants.filter(Boolean) };
+        const lastMsg = await ctx.db
+            .query("messages")
+            .withIndex("by_conversationId", (q) =>
+                q.eq("conversationId", conv._id)
+            )
+            .order("desc")
+            .first();
+
+        let enrichedLastMsg = null;
+        if (lastMsg) {
+            const sender = await ctx.db.get(lastMsg.senderId);
+            enrichedLastMsg = { ...lastMsg, sender };
+        }
+
+        return {
+            ...conv,
+            participants: participants.filter(Boolean),
+            lastMessage: enrichedLastMsg,
+        };
     },
 });
 

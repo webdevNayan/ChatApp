@@ -29,9 +29,9 @@ export function ConversationItem({
         ? null
         : conversation.participants.find((p) => p?._id !== currentUser._id);
 
-    const displayName = conversation.isGroup
+    const displayName = (conversation.isGroup
         ? conversation.name
-        : otherParticipant?.name || "Unknown User";
+        : otherParticipant?.name) || "Chat";
 
     const displayImage = conversation.isGroup
         ? conversation.groupImageUrl
