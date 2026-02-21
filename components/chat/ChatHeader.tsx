@@ -36,7 +36,7 @@ export function ChatHeader({ conversation, currentUserId }: ChatHeaderProps) {
         : otherParticipant?.name) || "Chat";
 
     const displayImage = conversation.isGroup
-        ? conversation.groupImageUrl
+        ? undefined
         : otherParticipant?.imageUrl;
 
     return (
