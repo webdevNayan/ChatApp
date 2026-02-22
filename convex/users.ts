@@ -106,8 +106,8 @@ export const searchUsers = query({
         return all.filter(
             (u) =>
                 u.clerkId !== args.currentClerkId &&
-                (u.name.toLowerCase().includes(term) ||
-                    (u.email ?? "").toLowerCase().includes(term))
+                ((u.name || "").toLowerCase().includes(term) ||
+                    (u.email || "").toLowerCase().includes(term))
         );
     },
 });
